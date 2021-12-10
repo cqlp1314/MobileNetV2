@@ -67,13 +67,7 @@ def generate(batch, size):
     pval = 'data/validation'
 
     datagen1 = ImageDataGenerator(
-        rescale=1. / 255,
-        shear_range=0.2,
-        zoom_range=0.2,
-        rotation_range=90,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        horizontal_flip=True)
+        rescale=1. / 255)
 
     datagen2 = ImageDataGenerator(rescale=1. / 255)
 
@@ -81,13 +75,15 @@ def generate(batch, size):
         ptrain,
         target_size=(size, size),
         batch_size=batch,
-        class_mode='categorical')
+        class_mode='categorical',
+        shuffle=True)
 
     validation_generator = datagen2.flow_from_directory(
         pval,
         target_size=(size, size),
         batch_size=batch,
-        class_mode='categorical')
+        class_mode='categorical',
+        shuffle=True)
 
     count1 = 0
     for root, dirs, files in os.walk(ptrain):
