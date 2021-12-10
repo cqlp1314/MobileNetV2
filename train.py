@@ -133,10 +133,10 @@ def train(batch, epochs, num_classes, size, weights, tclasses):
     train_generator, validation_generator, count1, count2 = generate(batch, size)
 
     if weights:
-        model = MobileNetv2((size, size, 3), tclasses)
+        model = MobileNetv2((size, size, 1), tclasses)
         model = fine_tune(num_classes, weights, model)
     else:
-        model = MobileNetv2((size, size, 3), num_classes)
+        model = MobileNetv2((size, size, 1), num_classes)
 
     opt = Adam()
     earlystop = EarlyStopping(monitor='val_acc', patience=30, verbose=0, mode='auto')
