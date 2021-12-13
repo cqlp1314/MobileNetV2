@@ -8,7 +8,7 @@ import pandas as pd
 
 from mobilenet_v2 import MobileNetv2
 
-from keras.optimizers import Adam
+from tensorflow.keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import EarlyStopping
 from keras.layers import Conv2D, Reshape, Activation
@@ -76,6 +76,7 @@ def generate(batch, size):
         target_size=(size, size),
         batch_size=batch,
         class_mode='categorical',
+        color_mode="grayscale",
         shuffle=True)
 
     validation_generator = datagen2.flow_from_directory(
@@ -83,6 +84,7 @@ def generate(batch, size):
         target_size=(size, size),
         batch_size=batch,
         class_mode='categorical',
+        color_mode="grayscale",
         shuffle=True)
 
     count1 = 0
@@ -139,8 +141,8 @@ def train(batch, epochs, num_classes, size, weights, tclasses):
         model = MobileNetv2((size, size, 1), num_classes)
 
     opt = Adam()
-    earlystop = EarlyStopping(monitor='val_acc', patience=30, verbose=0, mode='auto')
-    model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
+    earlystop = EarlyStopping(monitor='val_accuracy', patience=30, verbose=0, mode='auto')
+    model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['accuracy'])
 
     hist = model.fit_generator(
         train_generator,
@@ -148,6 +150,7 @@ def train(batch, epochs, num_classes, size, weights, tclasses):
         steps_per_epoch=count1 // batch,
         validation_steps=count2 // batch,
         epochs=epochs,
+        shuffle=True,
         callbacks=[earlystop])
 
     if not os.path.exists('model'):
